@@ -47,3 +47,27 @@ app.post('/create', (req, res) => {
   }
 });
 
+// 🧩 Validasi API key
+app.post('/checkapi', (req, res) => {
+  const { apikey } = req.body;
+  if (!apikey) {
+    return res.status(400).json({ valid: false, message: 'API key tidak boleh kosong' });
+  }
+
+  const sql = 'SELECT * FROM token WHERE token = ?';
+  db.query(sql, [apikey], (err, results) => {
+    if (err) {
+      console.error('❌ Error check API key:', err);
+      return res.status(500).json({ valid: false, message: 'Kesalahan server' });
+    }
+
+    if (results.length > 0) {
+      console.log(`✅ Valid API key: ${apikey}`);
+      return res.json({ valid: true, message: 'API key valid', data: results[0] });
+    } else {
+      console.log(`❌ Tidak ditemukan: ${apikey}`);
+      return res.status(401).json({ valid: false, message: 'API key tidak ditemukan' });
+    }
+  });
+});
+
