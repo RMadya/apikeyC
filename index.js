@@ -71,3 +71,16 @@ app.post('/checkapi', (req, res) => {
   });
 });
 
+// 🧩 Tampilkan semua API key
+app.get('/allkeys', (req, res) => {
+  const sql = 'SELECT * FROM token ORDER BY id DESC';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('❌ Error ambil data:', err);
+      return res.status(500).json({ message: 'Gagal ambil data' });
+    }
+    res.json(results);
+  });
+});
+
+
